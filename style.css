@@ -184,14 +184,34 @@ h1 em { font-style: italic; color: var(--clay); }
 }
 
 /* ---------- admin ---------- */
-.admin-link {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--muted);
-  text-decoration: none;
-  border: 1px solid var(--line-strong);
-  border-radius: 99px;
-  padding: 3px 12px;
-  margin-left: 10px;
+/* Discreet round admin button: pinned to the viewport's top-right corner,
+   blends with the page chrome until hovered. Direct URL access to
+   /admin.html remains. */
+.admin-fab {
+  position: fixed;
+  top: 14px;
+  right: 18px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--faint);
+  background: transparent;
+  border: 1px solid transparent;
+  z-index: 20;
+  transition: color .18s ease, border-color .18s ease, background .18s ease;
 }
-.admin-link:hover { color: var(--clay-deep); border-color: var(--clay); }
+.admin-fab:hover {
+  color: var(--clay-deep);
+  border-color: var(--line-strong);
+  background: var(--card);
+}
+.admin-fab:focus-visible {
+  outline: 2px solid var(--clay);
+  outline-offset: 2px;
+}
+@media (max-width: 560px) {
+  .admin-fab { top: 12px; right: 12px; }
+}

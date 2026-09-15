@@ -14,7 +14,7 @@
 <body>
 
 <header class="site-header">
-  <div class="wrap header-row">
+  <div class="wrap header-row" style="position:relative">
     <a class="mark" href="/" aria-label="funpx 首页">
       <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#191919"/><path d="M9 21.5 16 9l7 12.5" stroke="#D97757" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <span>funpx</span>
@@ -22,8 +22,13 @@
     <div class="header-meta">
       <span class="dot" id="live-dot" aria-hidden="true"></span>
       <span id="live-label"></span>
-      <a class="admin-link" href="/admin.html" title="管理后台">管理</a>
     </div>
+    <a class="admin-fab" href="/admin.html" aria-label="管理后台" title="管理后台">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+        <circle cx="12" cy="8" r="3.4"/>
+        <path d="M4.5 20c1-3.6 4-5.4 7.5-5.4s6.5 1.8 7.5 5.4" stroke-linecap="round"/>
+      </svg>
+    </a>
   </div>
 </header>
 
@@ -39,7 +44,7 @@
   <div id="groups"></div>
 
   <footer class="site-foot">
-    <p>funpx.cn · 由 Caddy 提供 HTTPS · <a href="/admin.html">管理后台</a></p>
+    <p>funpx.cn · 由 Caddy 提供 HTTPS</p>
   </footer>
 </main>
 
