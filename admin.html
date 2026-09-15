@@ -3,162 +3,187 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>funpx · 管理后台</title>
+<title>funpx · 管理控制台</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23191919'/%3E%3Cpath d='M9 21.5 16 9l7 12.5' stroke='%23D97757' stroke-width='2.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css">
 <style>
-  body.admin-page { overflow: hidden; }
-  .admin-shell { height: 100vh; display: flex; flex-direction: column; }
+  :root {
+    --panel: #ffffff;
+    --shell: #F5F3EE;
+    --sidebar: #191919;
+    --sidebar-ink: #EDEAE2;
+    --sidebar-dim: #9C978C;
+  }
+  html, body { height: 100%; }
+  body.admin-page { margin: 0; background: var(--shell); overflow: hidden; }
 
-  /* login */
-  .login-box { max-width: 380px; margin: 18vh auto 0; text-align: left; }
-  .login-box input, .inline-input {
-    width: 100%; padding: 9px 12px; border: 1px solid var(--line-strong);
-    border-radius: 8px; font: inherit; background: #fff; color: var(--slate);
+  .app { display: flex; height: 100vh; }
+
+  /* ---------- sidebar ---------- */
+  .sidebar {
+    width: 224px; flex: 0 0 224px;
+    background: var(--sidebar); color: var(--sidebar-ink);
+    display: flex; flex-direction: column;
   }
-  .btn {
-    display: inline-block; border: 0; cursor: pointer; font: inherit; font-weight: 600;
-    padding: 9px 18px; border-radius: 8px; background: var(--ink); color: var(--bone);
+  .side-brand {
+    display: flex; align-items: center; gap: 10px;
+    padding: 18px 18px 16px; font-weight: 600; color: #fff;
+    letter-spacing: -0.01em; text-decoration: none;
   }
-  .btn.clay { background: var(--clay); }
+  .side-section {
+    font-size: 10.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--sidebar-dim); padding: 14px 18px 6px;
+  }
+  .side-nav { flex: 1; overflow-y: auto; padding-bottom: 10px; }
+  .side-item {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    width: calc(100% - 16px); margin: 1px 8px; padding: 8px 10px;
+    border: 0; border-radius: 8px; background: transparent; cursor: pointer;
+    color: var(--sidebar-ink); font: inherit; font-size: 13.5px; text-align: left;
+    transition: background .14s ease;
+  }
+  .side-item:hover { background: rgba(255,255,255,.07); }
+  .side-item.active { background: rgba(217,119,87,.22); color: #fff; }
+  .side-item .count { font-size: 11px; color: var(--sidebar-dim); background: rgba(255,255,255,.08); border-radius: 99px; padding: 1px 8px; }
+  .side-item.active .count { color: #F4C9B8; background: rgba(217,119,87,.35); }
+  .side-foot { padding: 12px 14px; border-top: 1px solid rgba(255,255,255,.09); display: grid; gap: 8px; }
+  .side-foot .btn { width: 100%; text-align: center; }
+  .btn { display: inline-block; border: 0; cursor: pointer; font: inherit; font-weight: 600; padding: 8px 16px; border-radius: 8px; }
+  .btn.clay { background: var(--clay); color: #fff; }
   .btn.clay:hover { background: var(--clay-deep); }
+  .btn.dark { background: #2B2925; color: #F5F3EE; }
   .btn.ghost { background: transparent; color: var(--slate); border: 1px solid var(--line-strong); }
   .btn.ghost:hover { border-color: var(--clay); color: var(--clay-deep); }
   .btn.small { padding: 3px 12px; font-size: 12.5px; }
   .btn.danger-ghost { background: transparent; color: var(--down); border: 1px solid transparent; }
   .btn.danger-ghost:hover { border-color: var(--down); }
-  .btn:focus-visible, .inline-input:focus-visible { outline: 2px solid var(--clay); outline-offset: 2px; }
-  .err { color: var(--down); font-size: 13.5px; min-height: 18px; }
+  .btn:focus-visible, input:focus-visible { outline: 2px solid var(--clay); outline-offset: 2px; }
 
-  /* header */
-  .admin-head { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--line); }
-  .admin-head h1 { font-family: "Fraunces", Georgia, serif; font-size: 20px; font-weight: 600; margin: 0; color: var(--ink); }
-  .admin-head .spacer { flex: 1; }
+  /* ---------- main ---------- */
+  .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+  .topbar {
+    height: 58px; background: var(--panel); border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; gap: 14px; padding: 0 22px;
+  }
+  .topbar h1 { font-family: "Fraunces", Georgia, serif; font-size: 19px; font-weight: 600; margin: 0; color: var(--ink); }
+  .topbar .sub { font-size: 12.5px; color: var(--faint); }
+  .topbar .spacer { flex: 1; }
+  .status-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 99px; padding: 3px 11px; background: #fff; }
+  .status-pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); }
 
-  /* carousel */
-  .carousel-viewport { flex: 1; overflow: hidden; position: relative; }
-  .carousel-track {
-    display: flex; height: 100%;
-    transition: transform .32s cubic-bezier(.4,0,.2,1);
-  }
-  .group-slide {
-    flex: 0 0 100%; height: 100%; overflow-y: auto; padding: 22px 0 90px;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .carousel-track { transition: none; }
-  }
+  .content { flex: 1; overflow-y: auto; padding: 20px 22px 30px; }
 
-  /* group card */
-  .group-card {
-    background: #fff; border: 1px solid var(--line); border-radius: 16px;
-    padding: 22px 24px; max-width: 860px; margin: 0 auto;
+  /* stats row */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 18px; }
+  .stat {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px;
   }
-  .group-card .gc-head { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 14px; flex-wrap: wrap; }
-  .group-card .gc-head .field { flex: 1 1 200px; }
-  .field label { display: block; font-size: 11.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--faint); margin-bottom: 4px; }
+  .stat .k { font-size: 11.5px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--faint); }
+  .stat .v { font-family: "Fraunces", Georgia, serif; font-size: 26px; font-weight: 600; color: var(--ink); margin-top: 2px; }
+  .stat .s { font-size: 12px; color: var(--faint); }
+
+  /* group editor card */
+  .editor-card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; max-width: 880px; }
+  .ec-head { display: flex; gap: 14px; align-items: flex-start; flex-wrap: wrap; margin-bottom: 6px; }
+  .field { flex: 1 1 220px; }
+  .field label { display: block; font-size: 11px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--faint); margin-bottom: 4px; }
   .field input {
     width: 100%; padding: 8px 11px; border: 1px solid var(--line-strong);
     border-radius: 8px; font: inherit; background: #fff; color: var(--slate);
   }
   .field input:focus { border-color: var(--clay); outline: none; box-shadow: 0 0 0 3px rgba(217,119,87,.12); }
 
-  /* link rows as mini-cards */
-  .link-card {
-    border: 1px solid var(--line); border-radius: 12px;
-    padding: 12px 14px; margin: 10px 0;
-    background: var(--bone);
-    display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px;
+  /* links table */
+  .links-table { margin-top: 14px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .links-head, .link-row {
+    display: grid; grid-template-columns: 1.1fr 1.6fr 1.4fr 1fr auto; gap: 12px; align-items: center;
+    padding: 8px 14px;
   }
-  .link-card .link-actions { grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 8px; }
-  .link-card input { background: #fff; }
-  @media (max-width: 640px) { .link-card { grid-template-columns: 1fr; } }
-
-  .slide-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; flex-wrap: wrap; gap: 10px; }
-
-  /* nav controls */
-  .carousel-nav {
-    position: absolute; top: 50%; transform: translateY(-50%);
-    width: 40px; height: 40px; border-radius: 50%;
-    border: 1px solid var(--line-strong); background: var(--card); color: var(--slate);
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 14px rgba(25,25,25,.08);
-    transition: color .15s, border-color .15s;
+  .links-head { background: var(--bone); font-size: 11px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--faint); border-bottom: 1px solid var(--line); }
+  .link-row { background: #fff; border-bottom: 1px solid var(--line); }
+  .link-row:last-child { border-bottom: 0; }
+  .link-row input {
+    width: 100%; padding: 7px 10px; border: 1px solid var(--line-strong);
+    border-radius: 7px; font: inherit; font-size: 13.5px; background: var(--bone); color: var(--slate);
   }
-  .carousel-nav:hover { color: var(--clay-deep); border-color: var(--clay); }
-  .carousel-nav:disabled { opacity: .25; cursor: default; }
-  .carousel-nav:focus-visible { outline: 2px solid var(--clay); outline-offset: 2px; }
-  .carousel-nav.prev { left: 14px; }
-  .carousel-nav.next { right: 14px; }
-
-  /* dots */
-  .carousel-dots { display: flex; justify-content: center; gap: 8px; padding: 12px 0 4px; }
-  .carousel-dots button {
-    width: 9px; height: 9px; border-radius: 50%; border: 0; cursor: pointer;
-    background: var(--line-strong); padding: 0; transition: background .15s, transform .15s;
+  .link-row input:focus { border-color: var(--clay); background: #fff; outline: none; box-shadow: 0 0 0 3px rgba(217,119,87,.1); }
+  .row-actions { display: flex; gap: 6px; }
+  @media (max-width: 900px) {
+    .links-head { display: none; }
+    .link-row { grid-template-columns: 1fr 1fr; }
   }
-  .carousel-dots button.active { background: var(--clay); transform: scale(1.25); }
-  .carousel-dots button:focus-visible { outline: 2px solid var(--clay); outline-offset: 2px; }
 
-  /* bottom save bar */
-  .save-bar {
-    border-top: 1px solid var(--line); background: var(--bone);
-    padding: 12px 0; display: flex; gap: 12px; align-items: center;
-  }
-  .save-bar .muted { font-size: 13px; color: var(--faint); }
+  .empty-group { padding: 26px; text-align: center; color: var(--faint); font-size: 13.5px; border: 1px dashed var(--line-strong); border-radius: 12px; margin-top: 14px; }
+
+  .err { color: var(--down); font-size: 13.5px; min-height: 18px; }
   .muted { color: var(--faint); font-size: 13px; }
+
+  /* login */
+  .login-box { max-width: 380px; margin: 18vh auto 0; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 30px 30px 26px; }
+  .login-box input {
+    width: 100%; padding: 9px 12px; border: 1px solid var(--line-strong);
+    border-radius: 8px; font: inherit; background: #fff; color: var(--slate);
+  }
+
   .toast {
-    position: fixed; right: 20px; bottom: 74px; background: var(--ink); color: var(--bone);
+    position: fixed; right: 20px; bottom: 24px; background: var(--ink); color: var(--bone);
     padding: 10px 18px; border-radius: 8px; font-size: 14px; opacity: 0;
     transition: opacity .2s; pointer-events: none; z-index: 50;
   }
   .toast.show { opacity: 1; }
+
+  @media (max-width: 720px) {
+    .sidebar { width: 64px; flex-basis: 64px; }
+    .side-brand span, .side-section, .side-item .label, .side-foot .btn.ghost { display: none; }
+    .side-item { justify-content: center; }
+    .side-item .count { display: none; }
+  }
 </style>
 </head>
 <body class="admin-page">
 
-<div class="admin-shell">
+<div class="app" id="app" style="display:none">
 
-  <header class="wrap admin-head">
-    <a class="mark" href="/">
-      <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#191919"/><path d="M9 21.5 16 9l7 12.5" stroke="#D97757" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span>funpx 管理</span>
+  <aside class="sidebar">
+    <a class="side-brand" href="/">
+      <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#fff"/><path d="M9 21.5 16 9l7 12.5" stroke="#D97757" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>funpx 控制台</span>
     </a>
-    <div class="spacer"></div>
-    <a class="btn ghost small" href="/">返回导航</a>
-  </header>
-
-  <!-- login -->
-  <div id="login-view" class="login-box" style="display:none">
-    <h1 style="font-family:Fraunces,serif;font-weight:600;margin:0 0 6px;">管理后台</h1>
-    <p class="muted" style="margin:0 0 14px;">输入管理密钥以编辑导航内容。</p>
-    <input type="password" id="key-input" placeholder="管理密钥（sk-…）" autocomplete="off">
-    <p class="err" id="login-err"></p>
-    <button class="btn clay" id="login-btn">解锁</button>
-  </div>
-
-  <!-- editor -->
-  <div id="editor-view" style="display:none;flex:1;min-height:0;flex-direction:column;">
-    <div class="carousel-viewport" id="viewport">
-      <div class="carousel-track" id="track"></div>
-      <button class="carousel-nav prev" id="prev-btn" aria-label="上一个分组">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <button class="carousel-nav next" id="next-btn" aria-label="下一个分组">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
+    <div class="side-section">分组</div>
+    <nav class="side-nav" id="side-nav"></nav>
+    <div class="side-foot">
+      <button class="btn dark small" id="add-group">+ 新增分组</button>
+      <button class="btn ghost small" id="logout-btn">锁定退出</button>
     </div>
-    <div class="carousel-dots" id="dots"></div>
-    <div class="wrap save-bar">
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <h1 id="current-name">—</h1>
+      <span class="sub" id="current-sub"></span>
+      <div class="spacer"></div>
+      <span class="status-pill"><span class="dot"></span>已连接</span>
       <button class="btn clay" id="save-btn">保存全部</button>
-      <button class="btn ghost" id="add-group">+ 新增分组</button>
-      <button class="btn ghost" id="logout-btn">锁定</button>
-      <span class="muted" id="save-hint"></span>
+      <a class="btn ghost small" href="/" style="text-decoration:none">查看站点</a>
+    </header>
+
+    <div class="content">
+      <div class="stats" id="stats"></div>
+      <div class="editor-card" id="editor-card"></div>
     </div>
   </div>
+</div>
 
+<!-- login -->
+<div id="login-view" class="login-box" style="display:none">
+  <h1 style="font-family:Fraunces,serif;font-weight:600;margin:0 0 6px;font-size:22px;">管理控制台</h1>
+  <p class="muted" style="margin:0 0 14px;">输入管理密钥以编辑导航内容。</p>
+  <input type="password" id="key-input" placeholder="管理密钥（sk-…）" autocomplete="off">
+  <p class="err" id="login-err"></p>
+  <button class="btn clay" id="login-btn" style="width:100%">解锁</button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -186,31 +211,41 @@
     setTimeout(function () { t.classList.remove("show"); }, 2200);
   }
 
-  /* ---------- carousel ---------- */
-  function slideCount() { return data.groups.length; }
-
-  function goTo(i, skipRender) {
-    current = Math.max(0, Math.min(i, slideCount() - 1));
-    $("track").style.transform = "translateX(-" + (current * 100) + "%)";
-    $("prev-btn").disabled = current === 0;
-    $("next-btn").disabled = current >= slideCount() - 1;
-    renderDots();
-  }
-
-  function renderDots() {
-    var dots = $("dots");
-    dots.innerHTML = "";
+  /* ---------- sidebar ---------- */
+  function renderSidebar() {
+    var nav = $("side-nav");
+    nav.innerHTML = "";
     data.groups.forEach(function (g, i) {
-      var b = document.createElement("button");
-      b.className = i === current ? "active" : "";
-      b.setAttribute("aria-label", "第 " + (i + 1) + " 组：" + (g.name || "未命名"));
-      b.title = g.name || "未命名分组";
-      b.addEventListener("click", function () { goTo(i); });
-      dots.appendChild(b);
+      var item = document.createElement("button");
+      item.className = "side-item" + (i === current ? " active" : "");
+      var label = el("span", "label", g.name || "未命名");
+      item.appendChild(label);
+      item.appendChild(el("span", "count", String((g.links || []).length)));
+      item.addEventListener("click", function () { select(i); });
+      nav.appendChild(item);
     });
   }
 
-  /* ---------- editing ---------- */
+  /* ---------- stats ---------- */
+  function renderStats() {
+    var stats = $("stats");
+    stats.innerHTML = "";
+    var totalGroups = data.groups.length;
+    var totalLinks = data.groups.reduce(function (s, g) { return s + (g.links || []).length; }, 0);
+    var biggest = data.groups.reduce(function (m, g) { return Math.max(m, (g.links || []).length); }, 0);
+    function stat(k, v, s) {
+      var box = el("div", "stat");
+      box.appendChild(el("div", "k", k));
+      box.appendChild(el("div", "v", String(v)));
+      box.appendChild(el("div", "s", s));
+      stats.appendChild(box);
+    }
+    stat("分组", totalGroups, "个内容分组");
+    stat("链接", totalLinks, "全部收录条目");
+    stat("最大分组", biggest, "单个分组链接数");
+  }
+
+  /* ---------- editor ---------- */
   function field(labelText, value, onChange, placeholder) {
     var wrap = el("div", "field");
     wrap.appendChild(el("label", null, labelText));
@@ -222,79 +257,92 @@
     return wrap;
   }
 
-  function buildLinkCard(group, link, linkIndex) {
-    var card = el("div", "link-card");
-    card.appendChild(field("名称", link.name, function (v) { link.name = v; }));
-    card.appendChild(field("网址", link.url, function (v) { link.url = v; }, "https://…"));
-    card.appendChild(field("描述", link.desc, function (v) { link.desc = v; }));
-    card.appendChild(field("域名标签（留空自动取域名）", link.host, function (v) { link.host = v; }));
-    var actions = el("div", "link-actions");
-    var open = el("button", "btn ghost small", "打开");
-    open.addEventListener("click", function () { if (link.url) window.open(link.url, "_blank"); });
-    var del = el("button", "btn danger-ghost small", "删除");
-    del.addEventListener("click", function () {
-      if (confirm("删除链接「" + (link.name || "未命名") + "」？")) {
-        group.links.splice(linkIndex, 1);
-        renderTrack();
-      }
-    });
-    actions.appendChild(open);
-    actions.appendChild(del);
-    card.appendChild(actions);
-    return card;
-  }
+  function renderEditor() {
+    var group = data.groups[current];
+    var card = $("editor-card");
+    card.innerHTML = "";
+    if (!group) { card.appendChild(el("p", "muted", "暂无分组")); return; }
 
-  function buildSlide(group, groupIndex) {
-    var slide = el("div", "group-slide");
-    var card = el("div", "group-card");
+    $("current-name").textContent = group.name || "未命名分组";
+    $("current-sub").textContent = "第 " + (current + 1) + " / " + data.groups.length + " 组";
 
-    var head = el("div", "gc-head");
-    head.appendChild(field("分组名称", group.name, function (v) { group.name = v; }));
+    var head = el("div", "ec-head");
+    head.appendChild(field("分组名称", group.name, function (v) {
+      group.name = v; renderSidebar(); $("current-name").textContent = v || "未命名分组";
+    }));
     head.appendChild(field("分组说明", group.desc, function (v) { group.desc = v; }));
     var delGroup = el("button", "btn danger-ghost small", "删除分组");
+    delGroup.style.alignSelf = "flex-end";
     delGroup.addEventListener("click", function () {
       if (confirm("删除分组「" + (group.name || "未命名") + "」及其全部链接？")) {
-        data.groups.splice(groupIndex, 1);
-        renderTrack();
+        data.groups.splice(current, 1);
+        current = Math.max(0, current - 1);
+        renderAll();
       }
     });
-    var headBtn = el("div", null);
-    headBtn.style.alignSelf = "flex-end";
-    headBtn.appendChild(delGroup);
-    head.appendChild(headBtn);
+    head.appendChild(delGroup);
     card.appendChild(head);
 
-    (group.links || []).forEach(function (link, i) {
-      card.appendChild(buildLinkCard(group, link, i));
+    var table = el("div", "links-table");
+    var headRow = el("div", "links-head");
+    ["名称", "网址", "描述", "域名标签", ""].forEach(function (t) {
+      headRow.appendChild(el("div", null, t));
+    });
+    table.appendChild(headRow);
+
+    (group.links || []).forEach(function (link, li) {
+      var row = el("div", "link-row");
+      row.appendChild(field("", link.name, function (v) { link.name = v; }));
+      row.appendChild(field("", link.url, function (v) { link.url = v; }, "https://…"));
+      row.appendChild(field("", link.desc, function (v) { link.desc = v; }));
+      row.appendChild(field("", link.host, function (v) { link.host = v; }, "自动"));
+      var actions = el("div", "row-actions");
+      var open = el("button", "btn ghost small", "打开");
+      open.addEventListener("click", function () { if (link.url) window.open(link.url, "_blank"); });
+      var del = el("button", "btn danger-ghost small", "删");
+      del.addEventListener("click", function () {
+        if (confirm("删除链接「" + (link.name || "未命名") + "」？")) {
+          group.links.splice(li, 1);
+          renderAll();
+        }
+      });
+      actions.appendChild(open);
+      actions.appendChild(del);
+      row.appendChild(actions);
+      table.appendChild(row);
     });
 
-    var foot = el("div", "slide-foot");
-    var counter = el("span", "muted", "第 " + (groupIndex + 1) + " / " + slideCount() + " 组 · " + (group.links || []).length + " 个链接");
-    var addLink = el("button", "btn ghost small", "+ 新增链接");
+    card.appendChild(table);
+
+    if (!(group.links || []).length) {
+      card.appendChild(el("div", "empty-group", "这个分组还没有链接，点下方按钮添加第一个。"));
+    }
+
+    var foot = el("div");
+    foot.style.marginTop = "14px";
+    var addLink = el("button", "btn dark small", "+ 新增链接");
     addLink.addEventListener("click", function () {
       group.links = group.links || [];
       group.links.push({ name: "", url: "https://", desc: "", host: "" });
-      renderTrack().then(function () {
-        var inputs = $("track").children[current] ? $("track").children[current].querySelectorAll(".link-card input") : [];
-        if (inputs.length >= 2) inputs[inputs.length - 2].focus();
+      renderAll().then(function () {
+        var rows = document.querySelectorAll(".link-row input");
+        if (rows.length >= 2) rows[rows.length - 2].focus();
       });
     });
-    foot.appendChild(counter);
     foot.appendChild(addLink);
     card.appendChild(foot);
-
-    slide.appendChild(card);
-    return slide;
   }
 
-  function renderTrack() {
-    var track = $("track");
-    track.innerHTML = "";
-    data.groups.forEach(function (group, i) {
-      track.appendChild(buildSlide(group, i));
-    });
-    goTo(current);
+  function renderAll() {
+    renderSidebar();
+    renderStats();
+    renderEditor();
     return Promise.resolve();
+  }
+
+  function select(i) {
+    current = Math.max(0, Math.min(i, data.groups.length - 1));
+    renderAll();
   }
 
   /* ---------- data ---------- */
@@ -304,13 +352,13 @@
       .then(function (d) {
         data.groups = (d && d.groups) || [];
         current = 0;
-        renderTrack();
+        renderAll();
       })
       .catch(function () { toast("加载失败"); });
   }
 
   function save() {
-    $("save-hint").textContent = "保存中…";
+    $("save-btn").textContent = "保存中…";
     fetch("/api/links", {
       method: "PUT",
       headers: { "Content-Type": "application/json", "X-Admin-Key": getKey() },
@@ -318,28 +366,22 @@
     })
       .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
       .then(function (res) {
-        $("save-hint").textContent = "";
-        if (res.ok && res.j.saved) {
-          toast("已保存");
-        } else if (res.j && res.j.error === "unauthorized") {
-          setKey("");
-          showLogin();
-        } else {
-          toast("保存失败: " + ((res.j && res.j.error) || ""));
-        }
+        $("save-btn").textContent = "保存全部";
+        if (res.ok && res.j.saved) toast("已保存");
+        else if (res.j && res.j.error === "unauthorized") { setKey(""); showLogin(); }
+        else toast("保存失败: " + ((res.j && res.j.error) || ""));
       })
-      .catch(function () { $("save-hint").textContent = ""; toast("网络错误"); });
+      .catch(function () { $("save-btn").textContent = "保存全部"; toast("网络错误"); });
   }
 
   /* ---------- views ---------- */
   function showEditor() {
     $("login-view").style.display = "none";
-    var ed = $("editor-view");
-    ed.style.display = "flex";
+    $("app").style.display = "flex";
     load();
   }
   function showLogin() {
-    $("editor-view").style.display = "none";
+    $("app").style.display = "none";
     $("login-view").style.display = "";
     $("key-input").value = "";
     $("key-input").focus();
@@ -356,44 +398,15 @@
       .catch(function () { $("login-err").textContent = "网络错误，请重试"; });
   }
 
-  /* ---------- events ---------- */
   $("login-btn").addEventListener("click", tryLogin);
   $("key-input").addEventListener("keydown", function (e) { if (e.key === "Enter") tryLogin(); });
   $("save-btn").addEventListener("click", save);
   $("logout-btn").addEventListener("click", function () { setKey(""); showLogin(); });
-  $("prev-btn").addEventListener("click", function () { goTo(current - 1); });
-  $("next-btn").addEventListener("click", function () { goTo(current + 1); });
   $("add-group").addEventListener("click", function () {
     data.groups.push({ id: "g" + Date.now(), name: "新分组", desc: "", links: [] });
-    current = data.groups.length - 1;
-    renderTrack();
+    select(data.groups.length - 1);
   });
 
-  /* keyboard: arrows switch slides when not typing in an input */
-  document.addEventListener("keydown", function (e) {
-    if ($("editor-view").style.display === "none") return;
-    var tag = (document.activeElement && document.activeElement.tagName) || "";
-    if (tag === "INPUT" || tag === "TEXTAREA") return;
-    if (e.key === "ArrowLeft") goTo(current - 1);
-    if (e.key === "ArrowRight") goTo(current + 1);
-  });
-
-  /* touch swipe */
-  (function () {
-    var startX = null;
-    var viewport = $("viewport");
-    viewport.addEventListener("touchstart", function (e) {
-      if (e.touches.length === 1) startX = e.touches[0].clientX;
-    }, { passive: true });
-    viewport.addEventListener("touchend", function (e) {
-      if (startX == null) return;
-      var dx = e.changedTouches[0].clientX - startX;
-      startX = null;
-      if (Math.abs(dx) > 60) goTo(current + (dx < 0 ? 1 : -1));
-    }, { passive: true });
-  })();
-
-  /* boot */
   if (getKey()) {
     fetch("/api/links", { headers: { "X-Admin-Key": getKey() }, cache: "no-store" })
       .then(function (r) { if (r.ok) showEditor(); else showLogin(); })
