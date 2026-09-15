@@ -10,9 +10,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css">
 <style>
-  .admin-wrap { max-width: 860px; margin: 0 auto; padding: 0 24px; }
-  .login-box { max-width: 380px; margin: 90px auto 0; }
-  .login-box input, .field input, .field select {
+  body.admin-page { overflow: hidden; }
+  .admin-shell { height: 100vh; display: flex; flex-direction: column; }
+
+  /* login */
+  .login-box { max-width: 380px; margin: 18vh auto 0; text-align: left; }
+  .login-box input, .inline-input {
     width: 100%; padding: 9px 12px; border: 1px solid var(--line-strong);
     border-radius: 8px; font: inherit; background: #fff; color: var(--slate);
   }
@@ -21,61 +24,142 @@
     padding: 9px 18px; border-radius: 8px; background: var(--ink); color: var(--bone);
   }
   .btn.clay { background: var(--clay); }
+  .btn.clay:hover { background: var(--clay-deep); }
   .btn.ghost { background: transparent; color: var(--slate); border: 1px solid var(--line-strong); }
-  .btn.small { padding: 4px 12px; font-size: 13px; }
-  .btn:focus-visible, input:focus-visible { outline: 2px solid var(--clay); outline-offset: 2px; }
-  .group-editor { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 18px; margin: 14px 0; }
-  .group-editor .row { display: flex; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
-  .group-editor .row .field { flex: 1 1 160px; }
-  .link-row { border-top: 1px dashed var(--line); padding: 10px 0; }
-  .link-row .row { margin-bottom: 6px; }
-  .link-row:last-child { border-bottom: 1px dashed var(--line); }
+  .btn.ghost:hover { border-color: var(--clay); color: var(--clay-deep); }
+  .btn.small { padding: 3px 12px; font-size: 12.5px; }
+  .btn.danger-ghost { background: transparent; color: var(--down); border: 1px solid transparent; }
+  .btn.danger-ghost:hover { border-color: var(--down); }
+  .btn:focus-visible, .inline-input:focus-visible { outline: 2px solid var(--clay); outline-offset: 2px; }
+  .err { color: var(--down); font-size: 13.5px; min-height: 18px; }
+
+  /* header */
+  .admin-head { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .admin-head h1 { font-family: "Fraunces", Georgia, serif; font-size: 20px; font-weight: 600; margin: 0; color: var(--ink); }
+  .admin-head .spacer { flex: 1; }
+
+  /* carousel */
+  .carousel-viewport { flex: 1; overflow: hidden; position: relative; }
+  .carousel-track {
+    display: flex; height: 100%;
+    transition: transform .32s cubic-bezier(.4,0,.2,1);
+  }
+  .group-slide {
+    flex: 0 0 100%; height: 100%; overflow-y: auto; padding: 22px 0 90px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .carousel-track { transition: none; }
+  }
+
+  /* group card */
+  .group-card {
+    background: #fff; border: 1px solid var(--line); border-radius: 16px;
+    padding: 22px 24px; max-width: 860px; margin: 0 auto;
+  }
+  .group-card .gc-head { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 14px; flex-wrap: wrap; }
+  .group-card .gc-head .field { flex: 1 1 200px; }
+  .field label { display: block; font-size: 11.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--faint); margin-bottom: 4px; }
+  .field input {
+    width: 100%; padding: 8px 11px; border: 1px solid var(--line-strong);
+    border-radius: 8px; font: inherit; background: #fff; color: var(--slate);
+  }
+  .field input:focus { border-color: var(--clay); outline: none; box-shadow: 0 0 0 3px rgba(217,119,87,.12); }
+
+  /* link rows as mini-cards */
+  .link-card {
+    border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 14px; margin: 10px 0;
+    background: var(--bone);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px;
+  }
+  .link-card .link-actions { grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 8px; }
+  .link-card input { background: #fff; }
+  @media (max-width: 640px) { .link-card { grid-template-columns: 1fr; } }
+
+  .slide-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; flex-wrap: wrap; gap: 10px; }
+
+  /* nav controls */
+  .carousel-nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 1px solid var(--line-strong); background: var(--card); color: var(--slate);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 14px rgba(25,25,25,.08);
+    transition: color .15s, border-color .15s;
+  }
+  .carousel-nav:hover { color: var(--clay-deep); border-color: var(--clay); }
+  .carousel-nav:disabled { opacity: .25; cursor: default; }
+  .carousel-nav:focus-visible { outline: 2px solid var(--clay); outline-offset: 2px; }
+  .carousel-nav.prev { left: 14px; }
+  .carousel-nav.next { right: 14px; }
+
+  /* dots */
+  .carousel-dots { display: flex; justify-content: center; gap: 8px; padding: 12px 0 4px; }
+  .carousel-dots button {
+    width: 9px; height: 9px; border-radius: 50%; border: 0; cursor: pointer;
+    background: var(--line-strong); padding: 0; transition: background .15s, transform .15s;
+  }
+  .carousel-dots button.active { background: var(--clay); transform: scale(1.25); }
+  .carousel-dots button:focus-visible { outline: 2px solid var(--clay); outline-offset: 2px; }
+
+  /* bottom save bar */
+  .save-bar {
+    border-top: 1px solid var(--line); background: var(--bone);
+    padding: 12px 0; display: flex; gap: 12px; align-items: center;
+  }
+  .save-bar .muted { font-size: 13px; color: var(--faint); }
   .muted { color: var(--faint); font-size: 13px; }
-  .toolbar { display: flex; gap: 10px; align-items: center; margin: 18px 0; flex-wrap: wrap; }
-  .save-bar { position: sticky; bottom: 0; background: var(--bone); border-top: 1px solid var(--line); padding: 14px 0; margin-top: 22px; display: flex; gap: 12px; align-items: center; }
-  .toast { position: fixed; right: 20px; bottom: 80px; background: var(--ink); color: var(--bone); padding: 10px 18px; border-radius: 8px; font-size: 14px; opacity: 0; transition: opacity .2s; pointer-events: none; }
+  .toast {
+    position: fixed; right: 20px; bottom: 74px; background: var(--ink); color: var(--bone);
+    padding: 10px 18px; border-radius: 8px; font-size: 14px; opacity: 0;
+    transition: opacity .2s; pointer-events: none; z-index: 50;
+  }
   .toast.show { opacity: 1; }
-  .err { color: var(--down); font-size: 13.5px; }
 </style>
 </head>
-<body>
+<body class="admin-page">
 
-<header class="site-header">
-  <div class="wrap header-row">
+<div class="admin-shell">
+
+  <header class="wrap admin-head">
     <a class="mark" href="/">
       <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#191919"/><path d="M9 21.5 16 9l7 12.5" stroke="#D97757" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <span>funpx 管理</span>
     </a>
-    <div class="header-meta"><a class="admin-link" href="/">返回导航</a></div>
-  </div>
-</header>
+    <div class="spacer"></div>
+    <a class="btn ghost small" href="/">返回导航</a>
+  </header>
 
-<main class="admin-wrap">
-  <div id="login-view" class="login-box">
-    <h1 style="font-family:Fraunces,serif;font-weight:600;">管理后台</h1>
-    <p class="muted">输入管理密钥以编辑导航内容。</p>
-    <div class="field"><input type="password" id="key-input" placeholder="管理密钥（sk-…）" autocomplete="off"></div>
+  <!-- login -->
+  <div id="login-view" class="login-box" style="display:none">
+    <h1 style="font-family:Fraunces,serif;font-weight:600;margin:0 0 6px;">管理后台</h1>
+    <p class="muted" style="margin:0 0 14px;">输入管理密钥以编辑导航内容。</p>
+    <input type="password" id="key-input" placeholder="管理密钥（sk-…）" autocomplete="off">
     <p class="err" id="login-err"></p>
-    <p><button class="btn clay" id="login-btn">解锁</button></p>
+    <button class="btn clay" id="login-btn">解锁</button>
   </div>
 
-  <div id="editor-view" style="display:none">
-    <h1 style="font-family:Fraunces,serif;font-weight:600;margin:36px 0 4px;">编辑导航</h1>
-    <p class="muted">改动保存后立即生效，所有访客可见。</p>
-
-    <div id="groups-editor"></div>
-
-    <div class="toolbar">
-      <button class="btn ghost" id="add-group">+ 新增分组</button>
+  <!-- editor -->
+  <div id="editor-view" style="display:none;flex:1;min-height:0;flex-direction:column;">
+    <div class="carousel-viewport" id="viewport">
+      <div class="carousel-track" id="track"></div>
+      <button class="carousel-nav prev" id="prev-btn" aria-label="上一个分组">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="carousel-nav next" id="next-btn" aria-label="下一个分组">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
     </div>
-
-    <div class="save-bar">
+    <div class="carousel-dots" id="dots"></div>
+    <div class="wrap save-bar">
       <button class="btn clay" id="save-btn">保存全部</button>
+      <button class="btn ghost" id="add-group">+ 新增分组</button>
       <button class="btn ghost" id="logout-btn">锁定</button>
       <span class="muted" id="save-hint"></span>
     </div>
   </div>
-</main>
+
+</div>
 
 <div class="toast" id="toast"></div>
 
@@ -84,6 +168,7 @@
   "use strict";
   var KEY_STORE = "fpxWebNavAdminKey";
   var data = { groups: [] };
+  var current = 0;
 
   function $(id) { return document.getElementById(id); }
   function el(tag, cls, text) {
@@ -101,80 +186,126 @@
     setTimeout(function () { t.classList.remove("show"); }, 2200);
   }
 
+  /* ---------- carousel ---------- */
+  function slideCount() { return data.groups.length; }
+
+  function goTo(i, skipRender) {
+    current = Math.max(0, Math.min(i, slideCount() - 1));
+    $("track").style.transform = "translateX(-" + (current * 100) + "%)";
+    $("prev-btn").disabled = current === 0;
+    $("next-btn").disabled = current >= slideCount() - 1;
+    renderDots();
+  }
+
+  function renderDots() {
+    var dots = $("dots");
+    dots.innerHTML = "";
+    data.groups.forEach(function (g, i) {
+      var b = document.createElement("button");
+      b.className = i === current ? "active" : "";
+      b.setAttribute("aria-label", "第 " + (i + 1) + " 组：" + (g.name || "未命名"));
+      b.title = g.name || "未命名分组";
+      b.addEventListener("click", function () { goTo(i); });
+      dots.appendChild(b);
+    });
+  }
+
+  /* ---------- editing ---------- */
   function field(labelText, value, onChange, placeholder) {
     var wrap = el("div", "field");
-    var lab = el("label", null, labelText);
-    lab.style.cssText = "display:block;font-size:12px;color:var(--muted);margin-bottom:3px;";
+    wrap.appendChild(el("label", null, labelText));
     var input = document.createElement("input");
     input.value = value == null ? "" : value;
     if (placeholder) input.placeholder = placeholder;
     input.addEventListener("input", function () { onChange(input.value); });
-    wrap.appendChild(lab);
     wrap.appendChild(input);
     return wrap;
   }
 
-  function renderGroup(group, groupIndex) {
-    var box = el("div", "group-editor");
-
-    var headRow = el("div", "row");
-    headRow.appendChild(field("分组名称", group.name, function (v) { group.name = v; }));
-    headRow.appendChild(field("分组说明", group.desc, function (v) { group.desc = v; }));
-    var del = el("button", "btn ghost small", "删除分组");
+  function buildLinkCard(group, link, linkIndex) {
+    var card = el("div", "link-card");
+    card.appendChild(field("名称", link.name, function (v) { link.name = v; }));
+    card.appendChild(field("网址", link.url, function (v) { link.url = v; }, "https://…"));
+    card.appendChild(field("描述", link.desc, function (v) { link.desc = v; }));
+    card.appendChild(field("域名标签（留空自动取域名）", link.host, function (v) { link.host = v; }));
+    var actions = el("div", "link-actions");
+    var open = el("button", "btn ghost small", "打开");
+    open.addEventListener("click", function () { if (link.url) window.open(link.url, "_blank"); });
+    var del = el("button", "btn danger-ghost small", "删除");
     del.addEventListener("click", function () {
-      if (confirm("删除分组「" + (group.name || "未命名") + "」及其全部链接？")) {
-        data.groups.splice(groupIndex, 1);
-        renderAll();
+      if (confirm("删除链接「" + (link.name || "未命名") + "」？")) {
+        group.links.splice(linkIndex, 1);
+        renderTrack();
       }
     });
-    var headBtns = el("div", null); headBtns.style.alignSelf = "flex-end";
-    headBtns.appendChild(del);
-    headRow.appendChild(headBtns);
-    box.appendChild(headRow);
+    actions.appendChild(open);
+    actions.appendChild(del);
+    card.appendChild(actions);
+    return card;
+  }
 
-    (group.links || []).forEach(function (link, linkIndex) {
-      var rowBox = el("div", "link-row");
-      var r1 = el("div", "row");
-      r1.appendChild(field("名称", link.name, function (v) { link.name = v; }));
-      r1.appendChild(field("网址（https://…）", link.url, function (v) { link.url = v; }));
-      rowBox.appendChild(r1);
-      var r2 = el("div", "row");
-      r2.appendChild(field("描述", link.desc, function (v) { link.desc = v; }));
-      r2.appendChild(field("域名标签（可留空自动取域名）", link.host, function (v) { link.host = v; }));
-      var delLink = el("button", "btn ghost small", "删除");
-      delLink.addEventListener("click", function () {
-        group.links.splice(linkIndex, 1);
-        renderAll();
-      });
-      r2.appendChild(delLink);
-      rowBox.appendChild(r2);
-      box.appendChild(rowBox);
+  function buildSlide(group, groupIndex) {
+    var slide = el("div", "group-slide");
+    var card = el("div", "group-card");
+
+    var head = el("div", "gc-head");
+    head.appendChild(field("分组名称", group.name, function (v) { group.name = v; }));
+    head.appendChild(field("分组说明", group.desc, function (v) { group.desc = v; }));
+    var delGroup = el("button", "btn danger-ghost small", "删除分组");
+    delGroup.addEventListener("click", function () {
+      if (confirm("删除分组「" + (group.name || "未命名") + "」及其全部链接？")) {
+        data.groups.splice(groupIndex, 1);
+        renderTrack();
+      }
+    });
+    var headBtn = el("div", null);
+    headBtn.style.alignSelf = "flex-end";
+    headBtn.appendChild(delGroup);
+    head.appendChild(headBtn);
+    card.appendChild(head);
+
+    (group.links || []).forEach(function (link, i) {
+      card.appendChild(buildLinkCard(group, link, i));
     });
 
+    var foot = el("div", "slide-foot");
+    var counter = el("span", "muted", "第 " + (groupIndex + 1) + " / " + slideCount() + " 组 · " + (group.links || []).length + " 个链接");
     var addLink = el("button", "btn ghost small", "+ 新增链接");
     addLink.addEventListener("click", function () {
       group.links = group.links || [];
       group.links.push({ name: "", url: "https://", desc: "", host: "" });
-      renderAll();
+      renderTrack().then(function () {
+        var inputs = $("track").children[current] ? $("track").children[current].querySelectorAll(".link-card input") : [];
+        if (inputs.length >= 2) inputs[inputs.length - 2].focus();
+      });
     });
-    box.appendChild(addLink);
-    return box;
+    foot.appendChild(counter);
+    foot.appendChild(addLink);
+    card.appendChild(foot);
+
+    slide.appendChild(card);
+    return slide;
   }
 
-  function renderAll() {
-    var host = $("groups-editor");
-    host.innerHTML = "";
-    data.groups.forEach(function (group, i) { host.appendChild(renderGroup(group, i)); });
+  function renderTrack() {
+    var track = $("track");
+    track.innerHTML = "";
+    data.groups.forEach(function (group, i) {
+      track.appendChild(buildSlide(group, i));
+    });
+    goTo(current);
+    return Promise.resolve();
   }
 
-  function collect() {
-    return { groups: data.groups };
-  }
-
+  /* ---------- data ---------- */
   function load() {
     fetch("/api/links", { cache: "no-store" })
       .then(function (r) { return r.json(); })
-      .then(function (d) { data.groups = (d && d.groups) || []; renderAll(); })
+      .then(function (d) {
+        data.groups = (d && d.groups) || [];
+        current = 0;
+        renderTrack();
+      })
       .catch(function () { toast("加载失败"); });
   }
 
@@ -183,28 +314,28 @@
     fetch("/api/links", {
       method: "PUT",
       headers: { "Content-Type": "application/json", "X-Admin-Key": getKey() },
-      body: JSON.stringify(collect()),
+      body: JSON.stringify({ groups: data.groups }),
     })
       .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
       .then(function (res) {
+        $("save-hint").textContent = "";
         if (res.ok && res.j.saved) {
-          $("save-hint").textContent = "";
           toast("已保存");
         } else if (res.j && res.j.error === "unauthorized") {
           setKey("");
           showLogin();
-          toast("密钥失效，请重新解锁");
         } else {
-          $("save-hint").textContent = "";
-          toast("保存失败: " + ((res.j && res.j.error) || res.ok));
+          toast("保存失败: " + ((res.j && res.j.error) || ""));
         }
       })
       .catch(function () { $("save-hint").textContent = ""; toast("网络错误"); });
   }
 
+  /* ---------- views ---------- */
   function showEditor() {
     $("login-view").style.display = "none";
-    $("editor-view").style.display = "";
+    var ed = $("editor-view");
+    ed.style.display = "flex";
     load();
   }
   function showLogin() {
@@ -218,27 +349,51 @@
     var key = $("key-input").value.trim();
     if (!key) return;
     fetch("/api/links", { headers: { "X-Admin-Key": key }, cache: "no-store" })
-      .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
-      .then(function (res) {
-        if (res.ok) {
-          setKey(key);
-          showEditor();
-        } else {
-          $("login-err").textContent = "密钥不正确";
-        }
+      .then(function (r) {
+        if (r.ok) { setKey(key); showEditor(); }
+        else { $("login-err").textContent = "密钥不正确"; }
       })
       .catch(function () { $("login-err").textContent = "网络错误，请重试"; });
   }
 
+  /* ---------- events ---------- */
   $("login-btn").addEventListener("click", tryLogin);
   $("key-input").addEventListener("keydown", function (e) { if (e.key === "Enter") tryLogin(); });
   $("save-btn").addEventListener("click", save);
   $("logout-btn").addEventListener("click", function () { setKey(""); showLogin(); });
+  $("prev-btn").addEventListener("click", function () { goTo(current - 1); });
+  $("next-btn").addEventListener("click", function () { goTo(current + 1); });
   $("add-group").addEventListener("click", function () {
     data.groups.push({ id: "g" + Date.now(), name: "新分组", desc: "", links: [] });
-    renderAll();
+    current = data.groups.length - 1;
+    renderTrack();
   });
 
+  /* keyboard: arrows switch slides when not typing in an input */
+  document.addEventListener("keydown", function (e) {
+    if ($("editor-view").style.display === "none") return;
+    var tag = (document.activeElement && document.activeElement.tagName) || "";
+    if (tag === "INPUT" || tag === "TEXTAREA") return;
+    if (e.key === "ArrowLeft") goTo(current - 1);
+    if (e.key === "ArrowRight") goTo(current + 1);
+  });
+
+  /* touch swipe */
+  (function () {
+    var startX = null;
+    var viewport = $("viewport");
+    viewport.addEventListener("touchstart", function (e) {
+      if (e.touches.length === 1) startX = e.touches[0].clientX;
+    }, { passive: true });
+    viewport.addEventListener("touchend", function (e) {
+      if (startX == null) return;
+      var dx = e.changedTouches[0].clientX - startX;
+      startX = null;
+      if (Math.abs(dx) > 60) goTo(current + (dx < 0 ? 1 : -1));
+    }, { passive: true });
+  })();
+
+  /* boot */
   if (getKey()) {
     fetch("/api/links", { headers: { "X-Admin-Key": getKey() }, cache: "no-store" })
       .then(function (r) { if (r.ok) showEditor(); else showLogin(); })
