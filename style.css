@@ -182,3 +182,16 @@ h1 em { font-style: italic; color: var(--clay); }
   .hero { padding: 48px 0 28px; }
   .group { padding-top: 32px; }
 }
+
+/* ---------- admin ---------- */
+.admin-link {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  border: 1px solid var(--line-strong);
+  border-radius: 99px;
+  padding: 3px 12px;
+  margin-left: 10px;
+}
+.admin-link:hover { color: var(--clay-deep); border-color: var(--clay); }
