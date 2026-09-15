@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>funpx 服务导航</title>
+<meta name="description" content="funpx.cn 自托管服务统一入口">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23191919'/%3E%3Cpath d='M9 21.5 16 9l7 12.5' stroke='%23D97757' stroke-width='2.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-row">
+    <a class="mark" href="/" aria-label="funpx 首页">
+      <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#191919"/><path d="M9 21.5 16 9l7 12.5" stroke="#D97757" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>funpx</span>
+    </a>
+    <div class="header-meta">
+      <span class="dot" id="live-dot" aria-hidden="true"></span>
+      <span id="live-label">检查在线状态…</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <p class="eyebrow">自托管服务台</p>
+    <h1>所有服务，<em>一个入口</em>。</h1>
+    <p class="lede">funpx.cn 服务器上运行着的每一项服务，按用途归组，点开即用。状态标签每 60 秒自动刷新。</p>
+  </section>
+
+  <nav class="group-index" aria-label="分组目录">
+    <a href="#ai">AI 模型接口</a>
+    <a href="#files">文件与网盘</a>
+    <a href="#ops">管理与运维</a>
+    <a href="#mail">邮件</a>
+  </nav>
+
+  <section class="group" id="ai">
+    <header class="group-head">
+      <h2>AI 模型接口</h2>
+      <p>OpenAI / Anthropic 兼容网关、渠道管理与模型路由</p>
+    </header>
+    <div class="grid">
+      <a class="card" data-href="https://p.funpx.dpdns.org/" href="https://p.funpx.dpdns.org/" target="_blank" rel="noopener">
+        <div class="card-top"><h3>CPA 控制台</h3><span class="status" data-probe="https://p.funpx.dpdns.org/">…</span></div>
+        <p>CLIProxyAPI 管理面板，GPT / Grok / Gemini 等 CLI 账号的代理接入与密钥管理。</p>
+        <span class="host">p.funpx.dpdns.org</span>
+      </a>
+      <a class="card" data-href="https://api.funpx.cn/" href="https://api.funpx.cn/" target="_blank" rel="noopener">
+        <div class="card-top"><h3>Sub2API</h3><span class="status" data-probe="https://api.funpx.cn/">…</span></div>
+        <p>账号池聚合为 OpenAI 兼容 API：分组、渠道监控、令牌与用量管理。</p>
+        <span class="host">api.funpx.cn · api.funpx.dpdns.org</span>
+      </a>
+      <a class="card" data-href="https://opencode2api.funpx.dpdns.org/healthz" href="https://opencode2api.funpx.dpdns.org/" target="_blank" rel="noopener">
+        <div class="card-top"><h3>OpenCode2API</h3><span class="status" data-probe="https://opencode2api.funpx.dpdns.org/healthz">…</span></div>
+        <p>OpenCode 源码版实例，每日自动同步上游模型列表，带健康检查。</p>
+        <span class="host">opencode2api.funpx.dpdns.org</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="group" id="files">
+    <header class="group-head">
+      <h2>文件与网盘</h2>
+      <p>临时文件直链与对象存储控制台</p>
+    </header>
+    <div class="grid">
+      <a class="card" data-href="https://pan.funpx.cn/" href="https://pan.funpx.cn/" target="_blank" rel="noopener">
+        <div class="card-top"><h3>DirectLink 传文件</h3><span class="status" data-probe="https://pan.funpx.cn/">…</span></div>
+        <p>拖入即得公网直链；上传历史云端同步，删除即时生效。</p>
+        <span class="host">pan.funpx.cn · pan.funpx.dpdns.org</span>
+      </a>
+      <a class="card" data-href="https://console.funpx.cn/" href="https://console.funpx.cn/" target="_blank" rel="noopener">
+        <div class="card-top"><h3>MinIO 控制台</h3><span class="status" data-probe="https://console.funpx.cn/">…</span></div>
+        <p>DirectLink 背后的 S3 对象存储，已汉化；浏览、上传与生命周期管理。</p>
+        <span class="host">console.funpx.cn</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="group" id="ops">
+    <header class="group-head">
+      <h2>管理与运维</h2>
+      <p>配置与验证类入口，无需日常访问</p>
+    </header>
+    <div class="grid">
+      <a class="card is-static" href="https://www.funpx.cn/" aria-current="page">
+        <div class="card-top"><h3>服务导航 <span class="here">当前页</span></h3><span class="status ok">在线</span></div>
+        <p>本站。所有服务的统一入口与状态总览。</p>
+        <span class="host">www.funpx.cn</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="group" id="mail">
+    <header class="group-head">
+      <h2>邮件</h2>
+      <p>临时邮箱服务</p>
+    </header>
+    <div class="grid">
+      <a class="card" data-href="https://moemail.funpx.cn/en" href="https://moemail.funpx.cn/en" target="_blank" rel="noopener">
+        <div class="card-top"><h3>MoeMail 临时邮箱</h3><span class="status" data-probe="https://moemail.funpx.cn/en">…</span></div>
+        <p>自托管一次性邮箱，用于注册验证码接收。</p>
+        <span class="host">moemail.funpx.cn</span>
+      </a>
+    </div>
+  </section>
+
+  <footer class="site-foot">
+    <p>funpx.cn · 自托管于 186.241.93.100 · 由 Caddy 提供 HTTPS</p>
+  </footer>
+
+</main>
+
+<script>
+(function () {
+  var labels = { ok: "在线", down: "离线" };
+  function probe(url, el) {
+    var ctrl = ("AbortController" in window) ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, 8000) : null;
+    var start = Date.now();
+    fetch(url, { mode: "no-cors", cache: "no-store", signal: ctrl ? ctrl.signal : undefined })
+      .then(function () {
+        if (timer) clearTimeout(timer);
+        el.textContent = labels.ok;
+        el.className = "status ok";
+        el.title = "响应 " + (Date.now() - start) + " ms";
+      })
+      .catch(function () {
+        if (timer) clearTimeout(timer);
+        el.textContent = labels.down;
+        el.className = "status down";
+      });
+  }
+  document.querySelectorAll(".status[data-probe]").forEach(function (el) {
+    probe(el.getAttribute("data-probe"), el);
+  });
+  var dot = document.getElementById("live-dot");
+  var label = document.getElementById("live-label");
+  function tick() {
+    var probed = document.querySelectorAll(".status[data-probe]");
+    var ok = document.querySelectorAll(".status[data-probe].ok").length;
+    label.textContent = ok + " / " + probed.length + " 服务在线";
+  }
+  setTimeout(tick, 8500);
+  setInterval(function () {
+    document.querySelectorAll(".status[data-probe]").forEach(function (el) {
+      probe(el.getAttribute("data-probe"), el);
+    });
+    setTimeout(tick, 8500);
+  }, 60000);
+})();
+</script>
+</body>
+</html>
