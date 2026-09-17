@@ -13,9 +13,6 @@
   :root {
     --panel: #ffffff;
     --shell: #F5F3EE;
-    --sidebar: #191919;
-    --sidebar-ink: #EDEAE2;
-    --sidebar-dim: #9C978C;
   }
   html, body { height: 100%; }
   body.admin-page { margin: 0; background: var(--shell); overflow: hidden; }
@@ -23,33 +20,40 @@
   .app { display: flex; height: 100vh; }
 
   /* ---------- sidebar ---------- */
+  /* Light sidebar tuned to the page palette: white surface, warm ink text,
+     clay accent for the active item — high contrast, no dark-on-dark. */
   .sidebar {
     width: 224px; flex: 0 0 224px;
-    background: var(--sidebar); color: var(--sidebar-ink);
+    background: var(--panel); color: var(--slate);
+    border-right: 1px solid var(--line);
     display: flex; flex-direction: column;
   }
   .side-brand {
     display: flex; align-items: center; gap: 10px;
-    padding: 18px 18px 16px; font-weight: 600; color: #fff;
+    padding: 18px 18px 16px; font-weight: 600; color: var(--ink);
     letter-spacing: -0.01em; text-decoration: none;
   }
   .side-section {
     font-size: 10.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
-    color: var(--sidebar-dim); padding: 14px 18px 6px;
+    color: var(--faint); padding: 14px 18px 6px;
   }
   .side-nav { flex: 1; overflow-y: auto; padding-bottom: 10px; }
   .side-item {
     display: flex; align-items: center; justify-content: space-between; gap: 8px;
     width: calc(100% - 16px); margin: 1px 8px; padding: 8px 10px;
     border: 0; border-radius: 8px; background: transparent; cursor: pointer;
-    color: var(--sidebar-ink); font: inherit; font-size: 13.5px; text-align: left;
+    color: var(--slate); font: inherit; font-size: 13.5px; text-align: left;
     transition: background .14s ease;
   }
-  .side-item:hover { background: rgba(255,255,255,.07); }
-  .side-item.active { background: rgba(217,119,87,.22); color: #fff; }
-  .side-item .count { font-size: 11px; color: var(--sidebar-dim); background: rgba(255,255,255,.08); border-radius: 99px; padding: 1px 8px; }
-  .side-item.active .count { color: #F4C9B8; background: rgba(217,119,87,.35); }
-  .side-foot { padding: 12px 14px; border-top: 1px solid rgba(255,255,255,.09); display: grid; gap: 8px; }
+  .side-item:hover { background: var(--bone); }
+  .side-item.active { background: var(--clay); color: #fff; font-weight: 600; }
+  .side-item .count {
+    font-size: 11px; color: var(--faint);
+    background: var(--bone); border: 1px solid var(--line);
+    border-radius: 99px; padding: 1px 8px;
+  }
+  .side-item.active .count { color: #fff; background: rgba(255,255,255,.22); border-color: transparent; }
+  .side-foot { padding: 12px 14px; border-top: 1px solid var(--line); display: grid; gap: 8px; }
   .side-foot .btn { width: 100%; text-align: center; }
   .btn { display: inline-block; border: 0; cursor: pointer; font: inherit; font-weight: 600; padding: 8px 16px; border-radius: 8px; }
   .btn.clay { background: var(--clay); color: #fff; }
@@ -57,6 +61,8 @@
   .btn.dark { background: #2B2925; color: #F5F3EE; }
   .btn.ghost { background: transparent; color: var(--slate); border: 1px solid var(--line-strong); }
   .btn.ghost:hover { border-color: var(--clay); color: var(--clay-deep); }
+  .side-foot .btn.ghost { color: var(--down); border-color: var(--line-strong); }
+  .side-foot .btn.ghost:hover { border-color: var(--down); color: var(--down); }
   .btn.small { padding: 3px 12px; font-size: 12.5px; }
   .btn.danger-ghost { background: transparent; color: var(--down); border: 1px solid transparent; }
   .btn.danger-ghost:hover { border-color: var(--down); }
@@ -149,7 +155,7 @@
 
   <aside class="sidebar">
     <a class="side-brand" href="/">
-      <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#fff"/><path d="M9 21.5 16 9l7 12.5" stroke="#D97757" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#191919"/><path d="M9 21.5 16 9l7 12.5" stroke="#D97757" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <span>funpx 控制台</span>
     </a>
     <div class="side-section">分组</div>
